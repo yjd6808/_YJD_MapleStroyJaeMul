@@ -1,0 +1,422 @@
+﻿<Window x:Class="MapleJaeMul.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MapleJaeMul"
+        mc:Ignorable="d"
+        Title="재물신이여 강림하라!" Height="650" Width="700" Background="DarkGray"
+        DataContext="{Binding RelativeSource={RelativeSource Self}}"
+        Loaded="MainWindow_OnLoaded">
+    <Window.Resources>
+
+        <!-- https://stackoverflow.com/questions/22695145/wpf-change-background-color-of-a-combobox -->
+        <Style x:Key="ComboBoxTest2"
+               TargetType="{x:Type ComboBox}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBox">
+                        <Grid>
+                            <ToggleButton Grid.Column="2"
+                                          Focusable="false"
+                                          IsChecked="{Binding Path=IsDropDownOpen,Mode=TwoWay,RelativeSource={RelativeSource TemplatedParent}}">
+                                <ToggleButton.Template>
+                                    <ControlTemplate>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="5*" />
+                                                <ColumnDefinition Width="*" />
+                                            </Grid.ColumnDefinitions>
+                                            <Border x:Name="Border"
+                                                    Grid.ColumnSpan="2"
+                                                    CornerRadius="5"
+                                                    Background="LightGray"
+                                                    BorderBrush="Black"
+                                                    BorderThickness="1" />
+                                            <Border Grid.Column="0"
+                                                    CornerRadius="5,0,0,5"
+                                                    Margin="1"
+                                                    Background="#333333"
+                                                    BorderBrush="Black"
+                                                    BorderThickness="0,0,1,0" />
+                                            <Path x:Name="Arrow"
+                                                  Grid.Column="1"
+                                                  Fill="Black"
+                                                  HorizontalAlignment="Center"
+                                                  VerticalAlignment="Center"
+                                                  Data="M 0 0 L 4 4 L 8 0 Z" />
+                                        </Grid>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="ToggleButton.IsMouseOver"
+                                                     Value="true">
+                                                <Setter TargetName="Border"
+                                                        Property="Background"
+                                                        Value="Green" />
+                                            </Trigger>
+                                            <Trigger Property="ToggleButton.IsChecked"
+                                                     Value="true">
+                                                <Setter TargetName="Border"
+                                                        Property="Background"
+                                                        Value="Green" />
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </ToggleButton.Template>
+                            </ToggleButton>
+                            <ContentPresenter Name="ContentSite"
+                                              IsHitTestVisible="False"
+                                              Content="{TemplateBinding SelectionBoxItem}"
+                                              ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                              ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
+                                              Margin="3" />
+                            <TextBox x:Name="PART_EditableTextBox"
+                                     Visibility="Hidden"
+                                     IsReadOnly="{TemplateBinding IsReadOnly}" />
+                            <Popup Name="Popup"
+                                   Placement="Bottom"
+                                   IsOpen="{TemplateBinding IsDropDownOpen}"
+                                   AllowsTransparency="True"
+                                   Focusable="False"
+                                   PopupAnimation="Slide">
+                                <Grid  Name="DropDown"
+                                       SnapsToDevicePixels="True"
+                                       MinWidth="{TemplateBinding ActualWidth}"
+                                       MaxHeight="{TemplateBinding MaxDropDownHeight}">
+                                    <Border x:Name="DropDownBorder"
+                                            Background="#333333" />
+                                    <ScrollViewer SnapsToDevicePixels="True">
+                                        <StackPanel IsItemsHost="True" />
+                                    </ScrollViewer>
+                                </Grid>
+                            </Popup>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+    <Grid DataContext="{Binding State}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <StackPanel Background="#333333">
+            <Image Name="SundayEnabledImage" Source="pack://application:,,,/sunday.png" Visibility="Collapsed"/>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Button Grid.Column="0"
+                        Content="주문서" />
+                <Button Grid.Column="1"
+                        Foreground="White"
+                        Content="스타포스 강화"
+                        Background="#333333" />
+                <Button Grid.Column="2"
+                        Content="장비전송" />
+            </Grid>
+            <StackPanel Orientation="Horizontal"
+                        Width="200"
+                        Margin="0, 5, 0, 5">
+                <TextBlock Foreground="Orange"
+                           Text="메소"
+                           FontWeight="Bold" />
+                <TextBlock Foreground="White"
+                           Text="를 사용하여 장비를 강화합니다." />
+
+            </StackPanel>
+            <Separator Margin="0, 0, 0, 5" />
+
+            <Grid Height="150">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="150" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <Button Grid.Column="0"
+                        Background="LightSkyBlue">
+                    <Border Name="ItemBorder" BorderThickness="2" BorderBrush="Yellow">
+                        <Image Source="{Binding ItemImageSource}" />
+                    </Border>
+                    
+                </Button>
+                <TextBox Grid.Column="1"
+                         Name="EnchantOptionTextBox"
+                         Background="#333333"
+                         IsReadOnly="True"
+                         AcceptsReturn="True"
+                         BorderBrush="Transparent"
+                         FontWeight="Bold"
+                         Foreground="White"
+                         Text="0성 > 1성">
+                </TextBox>
+            </Grid>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <Grid Grid.Column="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="60" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0"
+                               Foreground="Beige"
+                               Text="스타캐치 해제"
+                               Padding="10, 5, 5, 5" />
+                    <CheckBox Name="StarCatchCheckBox"
+                              Grid.Column="1"
+                              HorizontalAlignment="Center"
+                              VerticalAlignment="Center" />
+                </Grid>
+
+                <Grid Grid.Column="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="60" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0"
+                               Foreground="Beige"
+                               Text="파괴 방지"
+                               Padding="10, 5, 5, 5" />
+                    <CheckBox Name="PreventDetroyCheckBox"
+                              Grid.Column="1"
+                              HorizontalAlignment="Center"
+                              Checked="PreventDetroyCheckBox_OnChecked"
+                              Unchecked="PreventDetroyCheckBox_OnUnchecked"
+                              VerticalAlignment="Center" />
+                </Grid>
+            </Grid>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0"
+                            Orientation="Horizontal">
+                    <TextBlock Foreground="Beige"
+                               Text="필요한 메소 : "
+                               Padding="10, 5, 5, 5" />
+                    <TextBlock Foreground="Orange"
+                               Name="MVPEnabledTextBlock"
+                               Text="MVP"
+                               FontWeight="Bold"
+                               Padding="0, 5, 5, 5" />
+                    <TextBlock Foreground="Orange"
+                               Name="PCEnabledTextBlock"
+                               Text="PC"
+                               FontWeight="Bold"
+                               Padding="0, 5, 5, 5" />
+                </StackPanel>
+                
+                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                    <TextBlock Name="EnchantOriginalMesoTextBlock"
+                               VerticalAlignment="Center"
+                               Text="100'000"
+                               Foreground="LightGray"
+                               FontWeight="Bold"
+                               HorizontalAlignment="Center"
+                               Margin="0, 0, 20, 0">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="TextDecorations">
+                                    <Setter.Value>
+                                        <TextDecorationCollection>
+                                            <TextDecoration Location="Strikethrough"
+                                                            PenOffset="-0.2">
+                                                <TextDecoration.Pen>
+                                                    <Pen Brush="OrangeRed"
+                                                         Thickness="3">
+                                                    </Pen>
+                                                </TextDecoration.Pen>
+                                            </TextDecoration>
+                                        </TextDecorationCollection>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                    <TextBlock 
+                               Name="EnchantMesoTextBlock"
+                               VerticalAlignment="Center"
+                               Text="100'000"
+                               Foreground="White"
+                               FontWeight="Bold"
+                               HorizontalAlignment="Center" />
+                </StackPanel>
+                
+            </Grid>
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <Button Grid.Column="0"
+                        Background="DarkGreen"
+                        Name="EnchantButton"
+                        Click="EnchantButton_Click">
+                    <TextBlock Text="+ 강화"
+                               Foreground="White"
+                               FontWeight="Bold" />
+                </Button>
+                <Button Grid.Column="1"
+                        Background="#777777"
+                        Name="CloseButton">
+                    <TextBlock Text="취소"
+                               Foreground="White"
+                               FontWeight="Bold" />
+                </Button>
+            </Grid>
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0"
+                           Foreground="Beige"
+                           Text="소지중인 메소 : "
+                           Padding="10, 5, 5, 5" />
+                <TextBlock Grid.Column="1"
+                           Name="LeftMesoTextBlock"
+                           VerticalAlignment="Center"
+                           Text="100'000'000'000"
+                           Foreground="White"
+                           FontWeight="Bold"
+                           HorizontalAlignment="Center" />
+            </Grid>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0"
+                           Foreground="Beige"
+                           Text="사용한 메소 : "
+                           Padding="10, 5, 5, 5" />
+                <TextBlock Grid.Column="1"
+                           Name="UsedMesoTextBlock"
+                           VerticalAlignment="Center"
+                           Text="100'000'000'000"
+                           Foreground="White"
+                           FontWeight="Bold"
+                           HorizontalAlignment="Center" />
+            </Grid>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0"
+                           Foreground="Beige"
+                           Text="강화중인 아이템 : "
+                           Padding="10, 5, 5, 5" />
+                <ComboBox Grid.Column="1"
+                          Name="EnchantingItemComboBox"
+                          HorizontalContentAlignment="Center"
+                          Foreground="White"
+                          Style="{StaticResource ComboBoxTest2}"
+                          SelectionChanged="EnchantingItemComboBox_OnSelectionChanged">
+                    <ComboBoxItem>도미네이터 펜던트</ComboBoxItem>
+                    <ComboBoxItem>하이네스 워리어헬름</ComboBoxItem>
+                    <ComboBoxItem>루즈 컨트롤 머신 마크</ComboBoxItem>
+                    <ComboBoxItem>아케인셰이드 아처숄더</ComboBoxItem>
+                    <ComboBoxItem>에테르넬 메이지로브</ComboBoxItem>
+                </ComboBox>
+              
+            </Grid>
+
+            <Grid Name="LastDiscountRateGrid">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0"
+                           Foreground="Beige"
+                           Text="최종 할인율 : "
+                           Padding="10, 5, 5, 5" />
+                <TextBlock Grid.Column="1"
+                           Name="LastDiscountRateTextBlock"
+                           VerticalAlignment="Center"
+                           Text="30.5%"
+                           Foreground="White"
+                           FontWeight="Bold"
+                           HorizontalAlignment="Center" />
+
+            </Grid>
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <Button Grid.Column="0"
+                        Grid.Row="0"
+                        Content="소지 메소 초기화"
+                        Name="InitLeftMesoButton"
+                        Click="InitLeftMesoButton_Click" />
+                <Button Grid.Column="1"
+                        Grid.Row="0"
+                        Name="InitUsedMesoButton"
+                        Content="사용 메소 초기화"
+                        Click="InitUsedMesoButton_Click" />
+                <Button Grid.Column="2"
+                        Grid.Row="0"
+                        Name="InitStarButton"
+                        Content="별 초기화"
+                        Click="InitStarButton_Click" />
+                <Button Grid.Column="0"
+                        Grid.Row="1"
+                        Content="썬데이 메이플 적용"
+                        Name="EnableSundayButton"
+                        Click="EnableSundayButton_Click" />
+                <Button Grid.Column="1"
+                        Grid.Row="1"
+                        Name="EnablePCButton"
+                        Content="프리미엄 PC방 적용"
+                        Click="EnablePCButton_Click" />
+                <Grid Grid.Column="2"
+                      Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="40"/>
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0"
+                               Foreground="Beige"
+                               Text="MVP"
+                               Padding="5, 0, 0, 0" />
+                    <ComboBox Name="MVPComboBox" Grid.Column="1" SelectedIndex="0" SelectionChanged="MVPComboBox_OnSelectionChanged">
+                        <ComboBoxItem>브론즈</ComboBoxItem>
+                        <ComboBoxItem>실버</ComboBoxItem>
+                        <ComboBoxItem>골드</ComboBoxItem>
+                        <ComboBoxItem>다이아</ComboBoxItem>
+                        <ComboBoxItem>레드</ComboBoxItem>
+                    </ComboBox>
+                </Grid>
+            </Grid>
+        </StackPanel>
+
+        <ListView Grid.Column="1"
+                 Name="LogListView"
+                     Background="#333333"
+                 ScrollViewer.VerticalScrollBarVisibility="Visible"
+                 ScrollViewer.CanContentScroll="True"
+                     Foreground="White">
+        </ListView>
+    </Grid>
+</Window>

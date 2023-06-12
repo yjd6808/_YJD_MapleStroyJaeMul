@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33205.214
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MapleJaeMul", "MapleJaeMul.csproj", "{2555A769-9B5E-45D4-8C99-EBCD4B91428D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2555A769-9B5E-45D4-8C99-EBCD4B91428D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2555A769-9B5E-45D4-8C99-EBCD4B91428D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2555A769-9B5E-45D4-8C99-EBCD4B91428D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2555A769-9B5E-45D4-8C99-EBCD4B91428D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7E0F3FAB-091C-4BDE-9357-DCE20F930F7E}
+	EndGlobalSection
+EndGlobal
