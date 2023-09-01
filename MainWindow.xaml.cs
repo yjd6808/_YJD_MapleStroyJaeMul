@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -219,6 +220,29 @@ namespace MapleJaeMul
             UpdateView();
         }
 
-        
+
+        private void ChangeStarCountButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (!int.TryParse(ChangeStarTextBox.Text, out var star))
+            {
+                MessageBox.Show("올바른 강화 수치를 입력해주세요.");
+                return;
+            }
+
+            if (star > 25 || star < 0)
+            {
+                MessageBox.Show("올바른 강화 수치를 입력해주세요.");
+                return;
+            }
+
+            State.Star = star;
+            UpdateView();
+        }
+
+        private void UIElement_OnPreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            Regex regex = new Regex("[^0-9]+");
+            e.Handled = regex.IsMatch(e.Text);
+        }
     }
 }

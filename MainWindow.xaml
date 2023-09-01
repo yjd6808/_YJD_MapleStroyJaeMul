@@ -408,6 +408,24 @@
                         <ComboBoxItem>레드</ComboBoxItem>
                     </ComboBox>
                 </Grid>
+              
+                <Grid Grid.Column="0"
+                      Grid.Row="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="60" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0"
+                               Foreground="Beige"
+                               Text="강화수치"
+                               Padding="5, 0, 0, 0" />
+                    <TextBox Name="ChangeStarTextBox" Grid.Column="1" PreviewTextInput="UIElement_OnPreviewTextInput"/>
+                </Grid>
+                <Button Grid.Column="1"
+                        Grid.Row="2"
+                        Name="ChangeStarCountButton"
+                        Content="변경"
+                        Click="ChangeStarCountButton_Click" />
             </Grid>
         </StackPanel>
 
